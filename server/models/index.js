@@ -1,14 +1,16 @@
-const mongoose = require('mongoose');
-const Producer = require('./producer.model');
-const Designer = require('./designer.model');
-const Auction = require('./auction.model');
-const Admin = require('./admin.model');
-// const Review = require('./review.model');
-// const Message = require('./message.model');
+import mongoose from 'mongoose';
+import Producer from './producer.js'
+import Designer from './designer.js';
+import Auction from './auction.js';
+import Admin from './admin.js';
+// import Review from './review.model';
+// import Message from './message.model';
 
-module.exports = {
+export {
   Producer,
   Designer,
   Auction,
   Admin,
+  // Review,
+  // Message,
 };
