@@ -1,4 +1,7 @@
 import Admin from '../../models/admin.js'; // Adjust the path as needed
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+const jwtSecret = 'sar1p0dha'; // Use a secure key from environment variables
 
 // Create a new admin
 export const createAdmin = async (req, res) => {
@@ -11,50 +14,24 @@ export const createAdmin = async (req, res) => {
   }
 };
 
-// Get all admins
-export const getAllAdmins = async (req, res) => {
+// Sign-in function
+export const signInAdmin = async (req, res) => {
   try {
-    const admins = await Admin.find();
-    res.status(200).json(admins);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+    const { username, password } = req.body;
 
-// Get an admin by ID
-export const getAdminById = async (req, res) => {
-  try {
-    const admin = await Admin.findById(req.params.id);
-    if (!admin) {
-      return res.status(404).json({ message: 'Admin not found' });
-    }
-    res.status(200).json(admin);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+    // Check if the admin exists
+    const admin = await Admin.findOne({ username });
+    if (!admin) return res.status(400).json({ message: 'Admin not found' });
 
-// Update an admin
-export const updateAdmin = async (req, res) => {
-  try {
-    const updatedAdmin = await Admin.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!updatedAdmin) {
-      return res.status(404).json({ message: 'Admin not found' });
-    }
-    res.status(200).json(updatedAdmin);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
+    // Compare the provided password with the stored hashed password
+    const isPasswordValid = await bcrypt.compare(password, admin.password);
+    if (!isPasswordValid)
+      return res.status(400).json({ message: 'Invalid credentials' });
 
-// Delete an admin
-export const deleteAdmin = async (req, res) => {
-  try {
-    const deletedAdmin = await Admin.findByIdAndDelete(req.params.id);
-    if (!deletedAdmin) {
-      return res.status(404).json({ message: 'Admin not found' });
-    }
-    res.status(204).send();
+    // Generate a JWT token
+    const token = jwt.sign({ id: admin._id, username: admin.username }, jwtSecret, { expiresIn: '1h' });
+
+    res.status(200).json({ token });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
