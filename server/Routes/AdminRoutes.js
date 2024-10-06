@@ -1,11 +1,10 @@
 import express from 'express';
-import {createAdmin,signInAdmin} from "../Controllers/Auth/AdminAuth.js"
+import {createAdmin,signInAdmin,UpdateInfo,ContinueWithGoogle} from "../Controllers/Auth/AdminAuth.js"
 
 const router = express.Router();
-router.post("/AdminRegister", (req, res, next) => {
-    console.log('Admin registration request:', req.body);
-    next();
-  }, createAdmin);
+router.post("/AdminRegister",  createAdmin);
+router.post("/AdminGoogleSignIn",  ContinueWithGoogle);
+router.post("/AdminUpdate",  UpdateInfo);
   router.post("/AdminSignIn",signInAdmin);
   
 export default router;

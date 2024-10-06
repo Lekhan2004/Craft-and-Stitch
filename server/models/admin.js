@@ -5,13 +5,15 @@ const { Schema } = mongoose;
 
 // Admin Schema
 const adminSchema = new Schema({
-  username: { type: String, required: true, unique: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true }, // Hashed
+  
+  username: { type: String, required: false, unique: true },
+  userId: { type: String, required: true, unique: true },
+  email: { type: String, required: false, unique: true },
+  password: { type: String, required: false }, // Hashed
   role: { 
     type: String, 
     enum: ['SuperAdmin', 'ModeratorAdmin', 'SupportAdmin'], 
-    required: true 
+    required: false 
   },
   isActive: { type: Boolean, default: true },
   createdAt: { type: Date, default: Date.now },
@@ -33,6 +35,6 @@ adminSchema.pre('save', async function(next) {
 });
 
 // Create model "Admin" with the defined schema
-const Admin = mongoose.model('Admins', adminSchema);
+const Admin = mongoose.model('Adminss', adminSchema);
 
 export default Admin;
